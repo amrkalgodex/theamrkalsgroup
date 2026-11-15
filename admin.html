@@ -1,1 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Private Admin Dashboard</title>
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
 
+  <div class="login-box" id="loginBox">
+    <h1>Admin Login</h1>
+    <p>Welcome to your private dashboard</p>
+    <input type="email" id="email" placeholder="Admin Email">
+    <input type="password" id="password" placeholder="Password">
+    <button id="loginBtn">Login</button>
+    <p id="message"></p>
+  </div>
+
+  <div class="dashboard" id="dashboard" hidden>
+    <h1>My Admin Dashboard</h1>
+    <p>Customer Inquiries</p>
+    <div class="stats">
+      <h2>Total Inquiries: <span id="total">0</span></h2>
+    </div>
+    <div id="inquiries"></div>
+    <button id="logoutBtn">Logout</button>
+  </div>
+
+  <script type="module" src="admin.js"></script>
+</body>
+</html>
