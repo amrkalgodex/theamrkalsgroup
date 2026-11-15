@@ -1,4 +1,4 @@
-[index (2).html](https://github.com/user-attachments/files/34865770/index.2.html)[Uplo<!doctype html>
+<!doctype html>
 <!--
 =====================================================================
  THE AMRKALS GROUP — complete website in ONE file (index.html)
