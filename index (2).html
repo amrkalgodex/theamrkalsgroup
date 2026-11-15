@@ -1,4 +1,31 @@
 <!doctype html>
+<!--
+=====================================================================
+ THE AMRKALS GROUP — complete website in ONE file (index.html)
+ Premium Tiles · Marble · Granite — supply & installation
+=====================================================================
+ FEATURES INCLUDED
+  Pages (single-page, no reload): Home · Materials · Installation · Our Work · About · Contact ·
+    Project Inquiry · Privacy · Terms · Staff dashboard (#/admin)
+  Home: hero, group intro, 3 material collections, 8 installation services, project-film slots,
+    6 "why us" points, 5-step process, quotation call-to-action with Call + WhatsApp
+  Materials: 20 materials with Tiles / Marble / Granite filter, "request a quotation" per item
+  Installation: 15 services (Floor, Wall, Staircase, Wet Area, Commercial, Infrastructure, Custom);
+    each button pre-fills the inquiry form
+  Our Work: real project gallery — photo cards, full-screen viewer with swipe/arrows, YouTube / Google Drive / MP4 video,
+    8 filters; the owner adds and deletes projects (photos up to 8 + video link) from the dashboard's "Project gallery" tab
+  Inquiry: 6-step guided form (Details, Requirement, Project, Files, Location, Review), validation,
+    photo/PDF upload (auto-compressed), GPS location sharing, reference number, bot trap,
+    WhatsApp hand-off to 7081573977, offline queue with automatic re-send
+  Owner dashboard (#/admin): PIN-protected, search, status tracking (New/Contacted/Quoted/Won/Closed),
+    customer files, one-tap Call and WhatsApp-the-customer, auto-refresh, lockout after 5 wrong PINs,
+    Project gallery manager (upload photos from gallery/camera, add video link, publish, delete)
+  Backend: Google Sheet + Drive + email + optional WhatsApp alert — the code is EMBEDDED below
+    (id="backend-code") and shown with setup steps inside the dashboard
+  Design: dark luxury theme, mobile menu, floating WhatsApp button, scroll animations, SEO tags
+ HOW TO CONNECT: open #/admin and follow "Backend code & setup guide", then set endpoint in CFG.
+=====================================================================
+-->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -237,6 +264,54 @@ footer .tagline{font-family:var(--serif);font-style:italic;color:var(--gold);fon
 .setup textarea{width:100%;margin-top:14px;background:#08080a;color:#cfc8b8;border:1px solid var(--line);padding:12px;font:12px/1.5 ui-monospace,Menlo,Consolas,monospace}
 .banner{border:1px solid var(--err);background:rgba(235,123,107,.08);padding:14px 18px;font-size:.88rem;margin-bottom:22px}
 .fx{background:none;border:0;color:var(--err);cursor:pointer;font-size:.75rem;margin-left:10px;font-family:inherit}
+.call-float{position:fixed;left:20px;bottom:20px;z-index:40;background:var(--gold);color:#0B0B0C;width:56px;height:56px;border-radius:50%;display:grid;place-items:center;box-shadow:0 8px 28px rgba(0,0,0,.5)}
+.call-link{color:var(--gold)!important}
+.sheet-bg{position:fixed;inset:0;z-index:90;background:rgba(0,0,0,.65);display:flex;align-items:flex-end;justify-content:center}
+.sheet{width:min(480px,100%);background:var(--panel);border:1px solid var(--gold);border-bottom:0;padding:26px 24px 30px;text-align:center}
+.sheet h3{font-size:1.6rem}
+.sheet .big{font-family:var(--serif);font-size:2.4rem;color:var(--gold);letter-spacing:.04em;margin:8px 0 6px;word-break:break-all}
+.sheet p{color:var(--muted);font-size:.88rem}
+.sheet .row{justify-content:center;margin-top:20px}
+.sheet .btn{padding:12px 20px;font-size:.72rem}
+.pick{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+.pick label.btn{position:relative;cursor:pointer;overflow:hidden}
+.pick input[type=file]{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:0}
+ [hidden]{display:none!important}
+.tabs{display:flex;gap:10px;margin-bottom:26px;flex-wrap:wrap}
+.proj{display:block;width:100%;text-align:left;background:var(--panel);border:1px solid var(--line);color:inherit;padding:0;cursor:pointer;font:inherit;transition:.3s}
+.proj:hover{border-color:var(--gold);transform:translateY(-3px)}
+.proj .cover{aspect-ratio:4/3;background:linear-gradient(135deg,#17171a,#0f0f10);position:relative;overflow:hidden;display:grid;place-items:center;color:var(--muted);font-size:.78rem;letter-spacing:.14em;text-transform:uppercase}
+.proj .cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .6s}
+.proj:hover .cover img{transform:scale(1.04)}
+.proj .badges{position:absolute;left:10px;bottom:10px;display:flex;gap:8px;z-index:1}
+.proj .badges span{background:rgba(11,11,12,.82);border:1px solid var(--line);font-size:.68rem;letter-spacing:.1em;padding:4px 10px;color:var(--text)}
+.proj .info{padding:16px 18px 20px}
+.proj h3{font-size:1.4rem;margin:0 0 4px}
+.proj small{color:var(--muted);font-size:.78rem;letter-spacing:.04em}
+.lb{position:fixed;inset:0;z-index:95;background:#050506;display:flex;flex-direction:column;padding:16px;overflow:auto}
+.lb-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.lb-top .btn{padding:10px 16px;font-size:.7rem;flex:none}
+.lb-stage{flex:1;min-height:240px;display:flex;align-items:center;justify-content:center;position:relative;margin:12px 0}
+.lb-stage img,.lb-stage video{max-width:100%;max-height:68vh;object-fit:contain}
+.lb-stage iframe{width:min(960px,100%);aspect-ratio:16/9;height:auto;border:0}
+.lb-nav{position:absolute;top:50%;transform:translateY(-50%);z-index:2;width:46px;height:46px;border-radius:50%;border:1px solid var(--gold);background:rgba(11,11,12,.8);color:var(--text);font-size:1.6rem;line-height:1;cursor:pointer}
+.lb-nav.prev{left:0}.lb-nav.next{right:0}
+.lb-thumbs{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;justify-content:center}
+.lb-thumbs button{width:58px;height:58px;border:1px solid var(--line);background:#111;cursor:pointer;flex:none;padding:0;display:grid;place-items:center;color:var(--gold)}
+.lb-thumbs button.on{border-color:var(--gold)}
+.lb-thumbs img{width:100%;height:100%;object-fit:cover}
+.padd{border:1px solid var(--line);background:var(--panel);padding:22px;margin-bottom:26px}
+.padd .field{margin-bottom:14px}
+.pthumbs{display:flex;gap:12px;flex-wrap:wrap;margin:12px 0}
+.pthumbs div{position:relative;width:84px;height:84px;border:1px solid var(--line)}
+.pthumbs img{width:100%;height:100%;object-fit:cover}
+.pthumbs button{position:absolute;top:-9px;right:-9px;width:24px;height:24px;border-radius:50%;border:0;background:var(--err);color:#0B0B0C;cursor:pointer;font-weight:700}
+.pitem{display:flex;gap:14px;align-items:center;border:1px solid var(--line);background:var(--panel);padding:12px;margin-bottom:12px;flex-wrap:wrap}
+.pitem img,.pitem .ph{width:72px;height:72px;object-fit:cover;border:1px solid var(--line);flex:none;background:#111}
+.pitem .meta{flex:1;min-width:160px}
+.pitem .meta b{font-family:var(--serif);font-size:1.25rem;font-weight:500;display:block}
+.pitem .meta small{color:var(--muted)}
+.pitem .btn{padding:9px 14px;font-size:.66rem}
 .reveal{opacity:0;transform:translateY(24px);transition:opacity .8s,transform .8s}
 .reveal.in{opacity:1;transform:none}
 @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}}
@@ -254,9 +329,10 @@ footer .tagline{font-family:var(--serif);font-style:italic;color:var(--gold);fon
       <a href="#/about" data-r="about">About</a>
       <a href="#/contact" data-r="contact">Contact</a>
       <a href="#/inquiry" data-r="inquiry" class="only-m">Start an Inquiry</a>
+      <a href="tel:+917081721056" class="only-m call-link">Call 7081721056</a>
     </nav>
     <div class="top-right">
-      <a class="tel" href="tel:7081721056">7081721056</a>
+      <a class="tel" href="tel:+917081721056">7081721056</a>
       <a class="btn solid" href="#/inquiry">Start an Inquiry</a>
       <button class="burger" id="burger" aria-label="Menu">☰</button>
     </div>
@@ -284,12 +360,13 @@ footer .tagline{font-family:var(--serif);font-style:italic;color:var(--gold);fon
         <li><a href="#/privacy">Privacy Policy</a></li>
         <li><a href="#/terms">Terms &amp; Conditions</a></li></ul></div>
       <div><h4>Contact</h4><ul>
-        <li><a href="tel:7081721056">Call 7081721056</a></li>
+        <li><a href="tel:+917081721056">Call 7081721056</a></li>
         <li><a data-wa href="#" target="_blank" rel="noopener">WhatsApp 7081573977</a></li></ul></div>
     </div>
     <div class="fbase"><span>© <span id="yr"></span> The Amrkals Group. All rights reserved.</span><span>Tiles · Marble · Granite · Installation</span></div>
   </div>
 </footer>
+<a class="call-float" href="tel:+917081721056" aria-label="Call 7081721056"><svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></a>
 <a class="wa-float" data-wa href="#" target="_blank" rel="noopener" aria-label="Chat on WhatsApp"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 3h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H9l-5 4V4a1 1 0 0 1 0-1zm4 5v2h8V8H8zm0 3.500v2h5v-2H8z"/></svg></a>
 
 <script type="text/plain" id="backend-code">
@@ -297,6 +374,9 @@ footer .tagline{font-family:var(--serif);font-style:italic;color:var(--gold);fon
  * The Amrkals Group — inquiry backend (Google Apps Script)
  * Create it from your Google Sheet: Extensions → Apps Script → paste this whole file.
  * Full steps are in SETUP.md.
+ *
+ * Project gallery: photos are stored in your Drive folder 'Amrkals Project Photos' (public link, so customers can see them)
+ * and project details in a 'Projects' sheet. After updating this code, run setup again and Deploy → Manage deployments → Edit → New version.
  *
  * Script properties to set (Project Settings → Script properties):
  *   ADMIN_PIN        required — at least 6 characters; opens the dashboard at  your-site/#/admin
@@ -336,6 +416,8 @@ function folder_() {
 function setup() {
   sheet_();
   folder_();
+  projSheet_();
+  photoFolder_();
   MailApp.getRemainingDailyQuota();
   Logger.log('Setup done. Now set ADMIN_PIN in Script properties, then Deploy → New deployment → Web app.');
 }
@@ -346,6 +428,12 @@ function doPost(e) {
   try {
     const b = JSON.parse((e.postData && e.postData.contents) || '{}');
     if (b.action === 'submit') return out_(submit_(b));
+    if (b.action === 'projects') return out_(listProjects_()); // public: customers see the gallery
+    if (b.action === 'addProject' || b.action === 'deleteProject') {
+      const bad2 = auth_(b.pin);
+      if (bad2) return out_(bad2);
+      return out_(b.action === 'addProject' ? addProject_(b) : deleteProject_(b));
+    }
     if (b.action === 'list' || b.action === 'status') {
       const bad = auth_(b.pin);
       if (bad) return out_(bad);
@@ -466,6 +554,101 @@ function setStatus_(b) {
   return { ok: false, message: 'Not found.' };
 }
 
+
+/* ================= Project gallery ================= */
+const PROJECT_HEADERS = ['ID', 'Created', 'Title', 'Category', 'Type', 'Status', 'Location', 'Photos', 'Video'];
+const PROJECT_CATS = ['Tiles', 'Marble', 'Granite'];
+const PROJECT_TYPES = ['Residential', 'Commercial'];
+const PROJECT_STATUS = ['Completed', 'Ongoing'];
+const MAX_PROJECT_PHOTOS = 8;
+
+function projSheet_() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let sh = ss.getSheetByName('Projects');
+  if (!sh) {
+    sh = ss.insertSheet('Projects');
+    sh.getRange(1, 1, sh.getMaxRows(), PROJECT_HEADERS.length).setNumberFormat('@');
+    sh.getRange(1, 1, 1, PROJECT_HEADERS.length).setValues([PROJECT_HEADERS]).setFontWeight('bold');
+    sh.setFrozenRows(1);
+  }
+  return sh;
+}
+
+function photoFolder_() {
+  const it = DriveApp.getFoldersByName('Amrkals Project Photos');
+  return it.hasNext() ? it.next() : DriveApp.createFolder('Amrkals Project Photos');
+}
+
+function listProjects_() {
+  const sh = projSheet_();
+  const last = sh.getLastRow();
+  if (last < 2) return { ok: true, projects: [] };
+  const vals = sh.getRange(2, 1, last - 1, PROJECT_HEADERS.length).getValues();
+  const projects = vals.filter(function (v) { return v[0]; }).map(function (v) {
+    let photos = [];
+    try { photos = JSON.parse(v[7] || '[]'); } catch (e) {}
+    return { id: v[0], created: v[1], title: v[2], cat: v[3], type: v[4], status: v[5], location: v[6],
+      photos: photos.map(function (p) { return p.url; }), video: v[8] };
+  }).reverse().slice(0, 100);
+  return { ok: true, projects: projects };
+}
+
+function addProject_(b) {
+  const title = clean_(b.title, 100);
+  if (!title) return { ok: false, message: 'Please enter a project title.' };
+  const cat = PROJECT_CATS.indexOf(b.cat) >= 0 ? b.cat : 'Marble';
+  const kind = PROJECT_TYPES.indexOf(b.type) >= 0 ? b.type : 'Residential';
+  const status = PROJECT_STATUS.indexOf(b.status) >= 0 ? b.status : 'Completed';
+  const video = clean_(b.video, 300);
+  if (video && !/^https:\/\//i.test(video)) return { ok: false, message: 'The video link must start with https://' };
+  const incoming = Array.isArray(b.photos) ? b.photos.slice(0, MAX_PROJECT_PHOTOS) : [];
+  if (!incoming.length && !video) return { ok: false, message: 'Add at least one photo or a video link.' };
+
+  const id = 'P-' + Utilities.getUuid().replace(/-/g, '').slice(0, 8);
+  const folder = photoFolder_();
+  const saved = [];
+  incoming.forEach(function (f, i) {
+    try {
+      const mime = f.type === 'image/png' ? 'image/png' : 'image/jpeg';
+      const bytes = Utilities.base64Decode(String(f.data || ''));
+      if (!bytes.length || bytes.length > MAX_FILE_BYTES) return;
+      const file = folder.createFile(Utilities.newBlob(bytes, mime, id + '_' + (i + 1) + (mime === 'image/png' ? '.png' : '.jpg')));
+      file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW); // public: it is website content
+      saved.push({ id: file.getId(), url: 'https://drive.google.com/thumbnail?id=' + file.getId() + '&sz=w1600' });
+    } catch (err) { console.error(err); }
+  });
+  if (!saved.length && !video) return { ok: false, message: 'The photos could not be saved. Try smaller photos.' };
+
+  const lock = LockService.getScriptLock();
+  lock.waitLock(20000);
+  try {
+    const sh = projSheet_();
+    const r = sh.getLastRow() + 1;
+    if (r > sh.getMaxRows()) sh.insertRowsAfter(sh.getMaxRows(), 100);
+    const rng = sh.getRange(r, 1, 1, PROJECT_HEADERS.length);
+    rng.setNumberFormat('@');
+    rng.setValues([[id, Utilities.formatDate(new Date(), 'Asia/Kolkata', "yyyy-MM-dd'T'HH:mm:ssXXX"), title, cat, kind, status, clean_(b.location, 80), JSON.stringify(saved), video]]);
+  } finally { lock.releaseLock(); }
+  return { ok: true, id: id };
+}
+
+function deleteProject_(b) {
+  const sh = projSheet_();
+  const last = sh.getLastRow();
+  if (last < 2) return { ok: false, message: 'Not found.' };
+  const vals = sh.getRange(2, 1, last - 1, PROJECT_HEADERS.length).getValues();
+  for (let i = 0; i < vals.length; i++) {
+    if (vals[i][0] === b.id) {
+      try {
+        JSON.parse(vals[i][7] || '[]').forEach(function (p) { try { DriveApp.getFileById(p.id).setTrashed(true); } catch (e) {} });
+      } catch (e) {}
+      sh.deleteRow(i + 2);
+      return { ok: true };
+    }
+  }
+  return { ok: false, message: 'Not found.' };
+}
+
 </script>
 <script>
 /* ============ CONFIG — edit these ============ */
@@ -475,9 +658,11 @@ const CFG = {
   waDisplay: '7081573977',
   endpoint: ''                 // Paste your Google Apps Script Web App URL here (see SETUP.md). Needed for the owner dashboard.
 };
-/* Add project films here when ready. cats: any of the filter names used on the Our Work page. */
+/* Real projects are normally added from the dashboard (#/admin → Project gallery).
+   You can also list some here by hand: cat = Tiles | Marble | Granite, type = Residential | Commercial, status = Completed | Ongoing.
+   photos = image links or file paths, video = YouTube / Google Drive / .mp4 link. */
 const PROJECTS = [
-  // { title:'Marble flooring — Villa', cats:['Marble Installation','Residential','Completed'], video:'videos/villa.mp4', poster:'' }
+  // { title:'Marble flooring — Villa', cat:'Marble', type:'Residential', status:'Completed', location:'Basti', photos:['images/villa1.jpg'], video:'https://youtu.be/XXXXXXXXXXX' }
 ];
 /* ============================================= */
 
@@ -593,10 +778,10 @@ pages.home = () => `
 </div></section>
 
 <section><div class="wrap">
-  <div class="head-split"><div><div class="eyebrow reveal">Our Work</div><h2 class="reveal">Project films <em>from our sites.</em></h2>
-  <p class="lead reveal">Marble flooring, large-format tiling and granite work filmed on site — published by our team as projects complete.</p></div>
+  <div class="head-split"><div><div class="eyebrow reveal">Our Work</div><h2 class="reveal">Real projects <em>from our sites.</em></h2>
+  <p class="lead reveal">Photos and films of our marble flooring, large-format tiling and granite work — published by our team as projects complete.</p></div>
   <a class="btn" href="#/portfolio">View Full Showcase</a></div>
-  <div class="grid g3">${[0,1,2].map(i => PROJECTS[i] ? filmCard(PROJECTS[i]) : '<div class="film reveal"><span>Project films publishing soon</span></div>').join('')}</div>
+  <div class="grid g3">${(() => { const ps = allProjects(); return [0, 1, 2].map(i => ps[i] ? projCard(ps[i]) : '<div class="film reveal"><span>Project photos &amp; films publishing soon</span></div>').join(''); })()}</div>
 </div></section>
 
 <section class="alt"><div class="wrap">
@@ -631,13 +816,101 @@ pages.home = () => `
     <div class="row"><a class="btn solid" href="#/inquiry">Start Your Inquiry</a><a class="btn" data-wa href="#" target="_blank" rel="noopener">WhatsApp Us</a></div>
   </div>
   <div class="direct"><div class="eyebrow">Direct Lines</div>
-    <a href="tel:${CFG.phone}"><small>Call the office</small><strong>${CFG.phone}</strong></a>
+    <a href="tel:+91${CFG.phone}"><small>Call the office</small><strong>${CFG.phone}</strong></a>
     <a data-wa href="#" target="_blank" rel="noopener"><small>WhatsApp</small><strong>${CFG.waDisplay}</strong></a>
     <p>Site visits, material samples and commercial contract discussions are arranged by appointment.</p></div>
 </div></section>`;
 
-function filmCard(p) {
-  return `<div class="film reveal"><video controls preload="metadata" ${p.poster ? `poster="${esc(p.poster)}"` : ''} src="${esc(p.video)}"></video></div>`;
+/* ---------------- Project gallery ---------------- */
+function mediaSrc(u, img) {
+  const s = String(u || '').trim();
+  if (/^https?:\/\//i.test(s)) return s;
+  if (img && /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(s)) return s;
+  if (/^(\.\/|\/)?[\w-][\w\-./%]*\.(jpe?g|png|webp|gif|mp4|webm|mov)$/i.test(s)) return s;
+  return '';
+}
+function videoInfo(url) {
+  const u = String(url || '').trim(); if (!u) return null;
+  let m = u.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?(?:.*&)?v=|shorts\/|embed\/|live\/))([\w-]{11})/i);
+  if (m) return { kind: 'iframe', src: 'https://www.youtube-nocookie.com/embed/' + m[1] + '?rel=0', thumb: 'https://img.youtube.com/vi/' + m[1] + '/hqdefault.jpg' };
+  m = u.match(/drive\.google\.com\/file\/d\/([\w-]+)/i) || u.match(/drive\.google\.com\/open\?id=([\w-]+)/i);
+  if (m) return { kind: 'iframe', src: 'https://drive.google.com/file/d/' + m[1] + '/preview', thumb: 'https://drive.google.com/thumbnail?id=' + m[1] + '&sz=w800' };
+  const s = mediaSrc(u, false);
+  if (s && /\.(mp4|webm|mov)(\?.*)?$/i.test(s)) return { kind: 'video', src: s, thumb: '' };
+  if (/^https:\/\//i.test(u)) return { kind: 'link', src: u, thumb: '' };
+  return null;
+}
+function allProjects() {
+  const base = CFG.endpoint ? remoteProjects : lsGet('amrkals_projects_local', []);
+  return [...base, ...PROJECTS.map((p, i) => ({ id: 's' + i, ...p }))];
+}
+const catsOf = (p) => p.cats || [p.cat ? p.cat + ' Installation' : '', p.type, p.status].filter(Boolean);
+function projCard(p) {
+  const v = p.video ? videoInfo(p.video) : null;
+  const photos = (p.photos || []).map(u => mediaSrc(u, true)).filter(Boolean);
+  const cover = photos[0] || (v && v.thumb) || '';
+  return `<button type="button" class="proj reveal" data-proj="${esc(p.id)}"><div class="cover">${cover ? `<img loading="lazy" alt="${esc(p.title)}" src="${esc(cover)}" onerror="this.remove()">` : '<span>Photo coming soon</span>'}
+    <div class="badges">${photos.length ? `<span>📷 ${photos.length}</span>` : ''}${v ? '<span>▶ Video</span>' : ''}</div></div>
+    <div class="info"><h3>${esc(p.title)}</h3><small>${esc([p.cat, p.type, p.status, p.location].filter(Boolean).join(' · '))}</small></div></button>`;
+}
+let lb = null;
+function lbItems(p) {
+  const items = (p.photos || []).map(u => mediaSrc(u, true)).filter(Boolean).map(src => ({ t: 'img', src }));
+  const v = p.video ? videoInfo(p.video) : null;
+  if (v) items.push({ t: v.kind, src: v.src, thumb: v.thumb });
+  return items;
+}
+function closeLb() { const el = $('#lb'); if (el) el.remove(); lb = null; document.body.style.overflow = ''; }
+function openProject(id) {
+  const p = allProjects().find(x => String(x.id) === String(id)); if (!p) return;
+  lb = { p, i: 0, items: lbItems(p) }; drawLb();
+}
+function drawLb() {
+  if (!lb) return;
+  let el = $('#lb');
+  if (!el) { el = document.createElement('div'); el.id = 'lb'; el.className = 'lb'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); document.body.appendChild(el); document.body.style.overflow = 'hidden'; }
+  const p = lb.p, items = lb.items, it = items[lb.i], n = items.length;
+  const media = !it ? '<p style="color:var(--muted)">Photos coming soon.</p>'
+    : it.t === 'img' ? `<img alt="${esc(p.title)}" src="${esc(it.src)}">`
+    : it.t === 'iframe' ? `<iframe src="${esc(it.src)}" title="${esc(p.title)}" allow="fullscreen; picture-in-picture" allowfullscreen loading="lazy" referrerpolicy="no-referrer"></iframe>`
+    : it.t === 'video' ? `<video controls playsinline preload="metadata" src="${esc(it.src)}"></video>`
+    : `<a class="btn solid" target="_blank" rel="noopener" href="${esc(it.src)}">Watch the video</a>`;
+  const msg = `Hello The Amrkals Group, I saw your project "${p.title}" and I would like a similar installation.`;
+  el.innerHTML = `<div class="lb-top"><div><h3 style="margin:0">${esc(p.title)}</h3><small style="color:var(--muted)">${esc([p.cat, p.type, p.status, p.location].filter(Boolean).join(' · '))}${n ? ` · ${lb.i + 1} / ${n}` : ''}</small></div>
+      <button type="button" class="btn ghost" data-lb="close" aria-label="Close">✕ Close</button></div>
+    <div class="lb-stage">${n > 1 ? '<button type="button" class="lb-nav prev" data-lb="prev" aria-label="Previous">‹</button>' : ''}${media}${n > 1 ? '<button type="button" class="lb-nav next" data-lb="next" aria-label="Next">›</button>' : ''}</div>
+    ${n > 1 ? `<div class="lb-thumbs">${items.map((x, i) => `<button type="button" class="${i === lb.i ? 'on' : ''}" data-lbi="${i}" aria-label="Item ${i + 1}">${x.t === 'img' ? `<img alt="" src="${esc(x.src)}">` : x.thumb ? `<img alt="" src="${esc(x.thumb)}">` : '<span>▶</span>'}</button>`).join('')}</div>` : ''}
+    <div class="row" style="justify-content:center;margin:12px 0 0"><a class="btn solid" target="_blank" rel="noopener" href="${waLink(msg)}">Enquire about similar work</a><a class="btn" href="#/inquiry">Request a quotation</a></div>`;
+}
+document.addEventListener('click', (e) => {
+  const c = e.target.closest && e.target.closest('[data-proj]');
+  if (c) { openProject(c.dataset.proj); return; }
+  const el = $('#lb'); if (!el || !lb) return;
+  if (e.target === el || e.target.closest('[data-lb="close"]')) { closeLb(); return; }
+  if (e.target.closest('a[href^="#/"]')) { closeLb(); return; }
+  const n = lb.items.length;
+  if (e.target.closest('[data-lb="next"]') && n) { lb.i = (lb.i + 1) % n; drawLb(); }
+  else if (e.target.closest('[data-lb="prev"]') && n) { lb.i = (lb.i - 1 + n) % n; drawLb(); }
+  else { const t = e.target.closest('[data-lbi]'); if (t) { lb.i = +t.dataset.lbi; drawLb(); } }
+});
+document.addEventListener('keydown', (e) => {
+  if (!lb) return;
+  if (e.key === 'Escape') { closeLb(); return; }
+  const n = lb.items.length;
+  if (e.key === 'ArrowRight' && n > 1) { lb.i = (lb.i + 1) % n; drawLb(); }
+  if (e.key === 'ArrowLeft' && n > 1) { lb.i = (lb.i - 1 + n) % n; drawLb(); }
+});
+async function loadProjects() {
+  if (!CFG.endpoint) return false;
+  try {
+    const j = await api({ action: 'projects' }, 25000);
+    if (j && j.ok && Array.isArray(j.projects)) {
+      remoteProjects = j.projects; lsSet('amrkals_proj_cache', remoteProjects.slice(0, 40));
+      if (!$('#lb') && (lastKey === 'home' || lastKey === 'portfolio')) { const y = window.scrollY; route(); window.scrollTo(0, y); }
+      return true;
+    }
+  } catch (_) {}
+  return false;
 }
 
 pages.materials = (q) => {
@@ -679,16 +952,16 @@ pages.services = () => `
 const FILTERS = ['All Projects','Tiles Installation','Marble Installation','Granite Installation','Residential','Commercial','Completed','Ongoing'];
 pages.portfolio = (q) => {
   const f = FILTERS.includes(q.get('f')) ? q.get('f') : 'All Projects';
-  const list = PROJECTS.filter(p => f === 'All Projects' || (p.cats || []).includes(f));
+  const list = allProjects().filter(p => f === 'All Projects' || catsOf(p).includes(f));
   return `
 <div class="page-hero"><div class="wrap"><div class="eyebrow">Our Work &amp; Project Showcase</div>
   <h1>Stone work, <em>filmed on our sites.</em></h1>
-  <p class="lead">Published project films and completed work from The Amrkals Group — tiles, marble and granite installation documented as projects progress and complete.</p></div></div>
+  <p class="lead">Real photos and films from The Amrkals Group's own sites — tiles, marble and granite installation documented as projects progress and complete. Tap any project to see all its photos and video.</p></div></div>
 <section style="padding-top:50px"><div class="wrap">
   <div class="chips">${FILTERS.map(x => `<a class="chip ${x === f ? 'on' : ''}" href="#/portfolio${x === 'All Projects' ? '' : '?f=' + encodeURIComponent(x)}">${x}</a>`).join('')}</div>
-  ${list.length ? `<div class="grid g3">${list.map(p => `<div>${filmCard(p)}<h3 style="margin-top:14px;font-size:1.3rem">${esc(p.title)}</h3></div>`).join('')}</div>` :
-  `<div class="empty"><div class="eyebrow" style="justify-content:center">Project films</div><h2>Our project films are being published.</h2>
-   <p style="max-width:52ch;margin:0 auto 26px">Videos of recent installations appear here as soon as they are published by our team. In the meantime, contact us for references relevant to your project.</p>
+  ${list.length ? `<div class="grid g3">${list.map(projCard).join('')}</div>` :
+  `<div class="empty"><div class="eyebrow" style="justify-content:center">Our work</div><h2>${f === 'All Projects' ? 'Our project photos and films are being published.' : 'No projects in this category yet.'}</h2>
+   <p style="max-width:52ch;margin:0 auto 26px">Photos and videos of recent installations appear here as soon as they are published by our team. In the meantime, contact us for references relevant to your project.</p>
    <a class="btn solid" href="#/contact">Talk to Our Team</a></div>`}
 </div></section>`;
 };
@@ -719,7 +992,7 @@ pages.contact = () => `
   <p class="lead">Call, message or send a full project inquiry. We review every requirement and respond with material options and an itemised quotation.</p>
   <div class="row"><a class="btn solid" href="#/inquiry">Send an Inquiry</a><a class="btn" data-wa href="#" target="_blank" rel="noopener">Chat on WhatsApp</a></div></div></div>
 <section><div class="wrap"><div class="grid g2">
-  <div class="card"><h3>Call the office</h3><p style="margin-bottom:14px">For quotations, site visits and commercial contract discussions.</p><a class="link" href="tel:${CFG.phone}" style="font-size:1.3rem;letter-spacing:.08em">${CFG.phone}</a></div>
+  <div class="card"><h3>Call the office</h3><p style="margin-bottom:14px">For quotations, site visits and commercial contract discussions.</p><a class="link" href="tel:+91${CFG.phone}" style="font-size:1.3rem;letter-spacing:.08em">${CFG.phone}</a></div>
   <div class="card"><h3>WhatsApp</h3><p style="margin-bottom:14px">Send photographs, drawings or a short description of your requirement.</p><a class="link" data-wa href="#" target="_blank" rel="noopener" style="font-size:1.3rem;letter-spacing:.08em">${CFG.waDisplay}</a></div>
 </div>
 <div class="card" style="margin-top:22px;padding:44px"><div class="eyebrow">Start properly</div><h2 style="font-size:2.2rem">A complete inquiry gets a faster, more accurate quotation.</h2>
@@ -779,13 +1052,22 @@ function renderStep(errors = {}) {
     <div class="field"><label>Approx. area (sq ft)</label><input data-k="area" type="text" inputmode="numeric" value="${esc(data.area)}" placeholder="e.g. 2500"></div></div>
     <div class="field"><label>When do you need it?</label><select data-k="timeline"><option value="">Select</option>${TIMELINES.map(x => `<option>${x}</option>`).join('')}</select></div>
     <div class="field"><label>Notes</label><textarea data-k="notes" placeholder="Colour, finish, sizes, rooms, special requirements…">${esc(data.notes)}</textarea></div>`;
-  if (step === 3) body = `<div class="field"><label>Site photos and drawings (photos or PDF, up to ${MAX_FILES} files)</label><input id="fileIn" type="file" multiple accept="image/*,application/pdf"></div>
+  if (step === 3) body = `${appNote()}<div class="field"><label>Your work place / site photos (up to ${MAX_FILES})</label>
+    <div class="pick"><label class="btn solid">🖼 Upload work place photo<input class="fin" type="file" multiple accept="image/*,application/pdf"></label>
+    <label class="btn">📷 Take a photo now<input class="fin" type="file" accept="image/*" capture="environment"></label></div></div>
     ${fileMsg ? `<div class="note" style="border-color:var(--err)">${esc(fileMsg)}</div>` : ''}
     <ul class="files">${files.map((x, i) => `<li>${esc(x.name)} <span style="opacity:.6">(${Math.max(1, Math.round(x.size / 1024))} KB)</span> <button class="fx" type="button" data-rm="${i}">Remove</button></li>`).join('')}</ul>
-    <div class="note">Photos are compressed automatically and sent with your inquiry. Other file types (such as CAD drawings) can be sent on WhatsApp ${CFG.waDisplay}.</div>`;
-  if (step === 4) body = `<div class="field"><label>Google Maps link</label><input data-k="mapLink" type="url" value="${esc(data.mapLink)}" placeholder="https://maps.google.com/…"></div>
+    <div class="note">Tap <b>Upload work place photo</b> — your phone's gallery opens. Photos are compressed and sent with your inquiry.
+    <b>Gallery did not open?</b> Send the photos on WhatsApp instead — tap the 📎 clip and choose Gallery.
+    <div class="row" style="margin-top:14px"><a class="btn" target="_blank" rel="noopener" href="${waLink(PHOTO_WA_TEXT)}">Send photos on WhatsApp ${CFG.waDisplay}</a></div></div>`;
+  if (step === 4) body = `${appNote()}<button class="btn solid" type="button" id="geo">📍 Share live location</button>
+    <p id="geomsg" style="margin:12px 0 22px;font-size:.9rem;color:var(--muted)">${data.coords ? 'Location captured ✓ ' + esc(data.coords) : 'Tap the button, then choose <b>Allow</b> when your phone asks.'}</p>
+    <div class="field"><label>Google Maps link</label><input data-k="mapLink" type="url" value="${esc(data.mapLink)}" placeholder="https://maps.google.com/…"></div>
     <div class="field"><label>Landmark / area</label><input data-k="landmark" type="text" value="${esc(data.landmark)}" placeholder="Near…"></div>
-    <button class="btn" type="button" id="geo">📍 Share my current location</button><p id="geomsg" style="margin-top:12px;font-size:.85rem;color:var(--muted)">${data.coords ? 'Location captured: ' + esc(data.coords) : ''}</p>`;
+    <div class="note"><b>Other ways to share your location</b> — use these if the button above is blocked:
+    <div class="row" style="margin-top:14px"><a class="btn" target="_blank" rel="noopener" href="${waLink(LIVE_WA_TEXT)}">Share live location on WhatsApp</a>
+    <a class="btn" target="_blank" rel="noopener" href="${MAPS_URL}">Open Google Maps</a><button class="btn ghost" type="button" id="paste">Paste copied link</button></div>
+    <p style="margin-top:12px">In Google Maps: tap the blue dot → <b>Share</b> → <b>Copy link</b>, come back here and tap <b>Paste copied link</b>.</p></div>`;
   if (step === 5) {
     const rows = [['Name', data.name], ['Mobile', data.mobile], ['Address', data.address], ['Email', data.email], ['Company', data.company], ['Requirement', data.requirement], ['Material / service', data.material], ['Project type', data.projectType], ['Area', data.area && data.area + ' sq ft'], ['Timeline', data.timeline], ['Notes', data.notes], ['Files', files.map(x => x.name).join(', ')], ['Location', [data.mapLink, data.landmark, data.coords].filter(Boolean).join(' · ')]];
     body = `<div class="review"><dl>${rows.filter(r => r[1]).map(r => `<dt>${r[0]}</dt><dd>${esc(r[1])}</dd>`).join('')}</dl></div>
@@ -813,6 +1095,7 @@ function validate() {
 const backendCode = () => ($('#backend-code') ? $('#backend-code').textContent.trim() : '');
 const lsGet = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k)); return v == null ? d : v; } catch (_) { return d; } };
 const lsSet = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (_) { return false; } };
+let remoteProjects = lsGet('amrkals_proj_cache', []);
 
 async function api(body, ms = 30000) {
   const c = new AbortController(); const t = setTimeout(() => c.abort(), ms);
@@ -845,13 +1128,32 @@ window.addEventListener('online', flushOutbox);
 /* ---------------- Files (photos / PDFs) ---------------- */
 const MAX_FILES = 5, MAX_PDF = 3 * 1024 * 1024;
 let fileMsg = '';
+const MAPS_URL = 'https://www.google.com/maps/@?api=1&map_action=map';
+const LIVE_WA_TEXT = 'Hello The Amrkals Group, I am sharing my live location for my inquiry. (WhatsApp: tap the 📎 clip → Location → Share live location.)';
+const PHOTO_WA_TEXT = 'Hello The Amrkals Group, I am sending photos of my work place / site for a quotation.';
+function framedPage() { try { return window.self !== window.top; } catch (_) { return true; } }
+function insideApp() { return framedPage() || /; wv\)|FBAN|FBAV|Instagram|Snapchat|MiuiBrowser|Line\//i.test(navigator.userAgent); }
+function appNote() {
+  if (!insideApp()) return '';
+  const link = /^https?:/i.test(location.href) ? `<a class="btn" target="_blank" rel="noopener" href="${esc(location.href.split('#')[0])}#/inquiry">Open in browser</a>` : '';
+  return `<div class="note" style="border-color:var(--err)"><b>You are viewing this page inside an app.</b> Apps often block the photo gallery and GPS. For the best result tap <b>⋮ → Open in Chrome</b> (or Safari), or use the WhatsApp buttons below.${link ? `<div class="row" style="margin-top:12px">${link}</div>` : ''}</div>`;
+}
+function tryOpen(url) { try { return !!window.open(url, '_blank'); } catch (_) { return false; } }
 const readB64 = (blob) => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(',')[1]); r.onerror = rej; r.readAsDataURL(blob); });
-async function shrinkImage(file) {
-  const bmp = await createImageBitmap(file);
-  const s = Math.min(1, 1600 / Math.max(bmp.width, bmp.height));
-  const c = document.createElement('canvas'); c.width = Math.round(bmp.width * s); c.height = Math.round(bmp.height * s);
+async function loadBitmap(file) {
+  if (window.createImageBitmap) { try { return await createImageBitmap(file); } catch (_) {} }
+  const url = URL.createObjectURL(file);
+  try {
+    return await new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = rej; im.src = url; });
+  } finally { setTimeout(() => URL.revokeObjectURL(url), 5000); }
+}
+async function shrinkImage(file, maxDim = 1600, quality = .8) {
+  const bmp = await loadBitmap(file);
+  const bw = bmp.width || bmp.naturalWidth, bh = bmp.height || bmp.naturalHeight;
+  const s = Math.min(1, maxDim / Math.max(bw, bh));
+  const c = document.createElement('canvas'); c.width = Math.max(1, Math.round(bw * s)); c.height = Math.max(1, Math.round(bh * s));
   c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
-  const blob = await new Promise(r => c.toBlob(r, 'image/jpeg', .8));
+  const blob = await new Promise(r => c.toBlob(r, 'image/jpeg', quality));
   return { name: file.name.replace(/\.[^.]+$/, '') + '.jpg', type: 'image/jpeg', size: blob.size, data: await readB64(blob) };
 }
 async function addFiles(list) {
@@ -926,7 +1228,7 @@ pages.admin = () => `<div class="page-hero"><div class="wrap"><div class="eyebro
 
 function initAdmin() {
   const root = $('#admin'); if (!root) return;
-  const st = { pin: '', rows: [], filter: 'All', q: '', err: '', busy: false, local: !CFG.endpoint };
+  const st = { pin: '', rows: [], filter: 'All', q: '', err: '', busy: false, local: !CFG.endpoint, tab: 'leads', pphotos: [], confirmDel: '' };
   try { st.pin = sessionStorage.getItem('amrkals_pin') || ''; } catch (_) {}
 
   async function load(silent) {
@@ -941,7 +1243,8 @@ function initAdmin() {
         st.pin = ''; try { sessionStorage.removeItem('amrkals_pin'); } catch (_) {}
       }
     } catch (_) { if (!silent) st.err = 'Could not reach the server. Check your internet connection and the endpoint URL.'; }
-    st.busy = false; draw();
+    st.busy = false; if (silent && $('#leads')) drawList(); else draw();
+    if (st.pin && !st.local) loadProjects().then(() => renderPList());
   }
 
 
@@ -952,6 +1255,7 @@ function initAdmin() {
       <li><b>Project Settings → Script properties</b>: add <b>ADMIN_PIN</b> (6+ characters, required). Optional: <b>OWNER_EMAIL</b>, and <b>CALLMEBOT_PHONE</b> + <b>CALLMEBOT_KEY</b> for free WhatsApp alerts (callmebot.com).</li>
       <li><b>Deploy → New deployment → Web app</b>: Execute as <b>Me</b>, access <b>Anyone</b>. Copy the Web app URL.</li>
       <li>In this file's script, set <b>endpoint: ''</b> to your URL, save, and upload the file to your hosting. Open <b>your-site/#/admin</b> and sign in with your PIN.</li>
+      <li><b>Updating later?</b> Paste the new code, run <b>setup</b> again, then <b>Deploy → Manage deployments → Edit → New version</b> (the URL stays the same). Needed once for the Project gallery.</li>
     </ol>
     <button class="btn solid" id="copyCode" type="button">Copy backend code</button> <span id="copyMsg" style="font-size:.85rem;color:var(--muted)"></span>
     <textarea id="codeBox" readonly rows="12" spellcheck="false">${esc(backendCode())}</textarea></details>`;
@@ -963,16 +1267,89 @@ function initAdmin() {
         <button class="btn solid" type="submit">${st.busy ? 'Checking…' : 'Open dashboard'}</button></form>`;
       return false;
     }
-    root.innerHTML = `${st.local ? `<div class="banner">Preview mode: no server is connected yet, so this only shows inquiries made on <b>this device</b>. Connect the Google Sheet backend (see SETUP.md) to receive every customer's inquiry here.</div>` : ''}
+    root.innerHTML = `${st.local ? `<div class="banner">Preview mode: no server is connected yet, so this only shows inquiries and projects made on <b>this device</b>. Connect the Google Sheet backend (see the setup guide below) to receive every customer's inquiry here and publish projects for all visitors.</div>` : ''}
       ${st.err ? `<div class="banner">${esc(st.err)}</div>` : ''}
-      <div class="stats" id="stats"></div>
-      <div class="admin-bar"><input id="q" type="search" placeholder="Search name, mobile, material…" value="${esc(st.q)}" style="flex:1;min-width:200px">
-        <select id="flt"><option>All</option>${STATUSES.map(s => `<option ${s === st.filter ? 'selected' : ''}>${s}</option>`).join('')}</select>
-        <button class="btn" id="refresh" type="button">Refresh</button>${st.local ? '' : '<button class="btn ghost" id="logout" type="button">Log out</button>'}</div>
-      <div id="leads"></div>${setupHtml()}`;
+      <div class="tabs"><button type="button" class="chip ${st.tab === 'leads' ? 'on' : ''}" data-tab="leads">Inquiries</button><button type="button" class="chip ${st.tab === 'projects' ? 'on' : ''}" data-tab="projects">Project gallery</button></div>
+      <div id="tabLeads" ${st.tab === 'leads' ? '' : 'hidden'}>
+        <div class="stats" id="stats"></div>
+        <div class="admin-bar"><input id="q" type="search" placeholder="Search name, mobile, material…" value="${esc(st.q)}" style="flex:1;min-width:200px">
+          <select id="flt"><option>All</option>${STATUSES.map(s => `<option ${s === st.filter ? 'selected' : ''}>${s}</option>`).join('')}</select>
+          <button class="btn" id="refresh" type="button">Refresh</button>${st.local ? '' : '<button class="btn ghost" id="logout" type="button">Log out</button>'}</div>
+        <div id="leads"></div></div>
+      <div id="tabProj" ${st.tab === 'projects' ? '' : 'hidden'}>${projPanel()}</div>${setupHtml()}`;
     return true;
   }
-  const draw = () => { if (frame()) drawList(); };
+  const draw = () => { if (frame()) { drawList(); renderPreview(); renderPList(); } };
+
+  /* ---- Project gallery manager ---- */
+  const projPanel = () => `<div class="padd"><h3 style="font-size:1.5rem;margin-bottom:14px">Add a real project</h3>
+    <div class="two"><div class="field"><label>Project title <i>*</i></label><input id="pTitle" maxlength="100" placeholder="e.g. Italian marble flooring — villa"></div>
+      <div class="field"><label>Location</label><input id="pLoc" maxlength="80" placeholder="Basti, Uttar Pradesh"></div></div>
+    <div class="grid g3" style="gap:14px"><div class="field"><label>Material</label><select id="pCat"><option>Marble</option><option>Tiles</option><option>Granite</option></select></div>
+      <div class="field"><label>Type</label><select id="pType"><option>Residential</option><option>Commercial</option></select></div>
+      <div class="field"><label>Status</label><select id="pStatus"><option>Completed</option><option>Ongoing</option></select></div></div>
+    <div class="field"><label>Photos (up to 8)</label><div class="pick"><label class="btn solid">🖼 Choose photos<input class="pfin" type="file" multiple accept="image/*"></label><label class="btn">📷 Take a photo<input class="pfin" type="file" accept="image/*" capture="environment"></label></div><div class="pthumbs" id="pPreview"></div></div>
+    <div class="field"><label>Video link <span style="opacity:.6">Optional — YouTube or Google Drive</span></label><input id="pVideo" type="url" placeholder="https://youtu.be/…"></div>
+    <div class="note">Videos are too large to upload here. Upload the film to <b>YouTube</b> (set it to <b>Unlisted</b>) or <b>Google Drive</b> (share → <b>Anyone with the link</b>), then paste the link above.</div>
+    <button class="btn solid" type="button" id="pAdd">Publish project</button> <span id="pMsg" style="font-size:.88rem;color:var(--muted);margin-left:8px"></span></div>
+    <div id="pList"></div>`;
+  function renderPreview() {
+    const el = $('#pPreview'); if (!el) return;
+    el.innerHTML = st.pphotos.map((x, i) => `<div><img alt="" src="data:image/jpeg;base64,${x.data}"><button type="button" data-prm="${i}" aria-label="Remove photo">×</button></div>`).join('');
+  }
+  function renderPList() {
+    const el = $('#pList'); if (!el) return;
+    const list = st.local ? lsGet('amrkals_projects_local', []) : remoteProjects;
+    el.innerHTML = `<h3 style="font-size:1.4rem;margin-bottom:14px">Published projects (${list.length})</h3>` + (list.length ? list.map(p => {
+      const cover = (p.photos || []).map(u => mediaSrc(u, true)).find(Boolean) || (p.video && (videoInfo(p.video) || {}).thumb) || '';
+      return `<div class="pitem">${cover ? `<img alt="" src="${esc(cover)}" onerror="this.remove()">` : '<div class="ph"></div>'}
+        <div class="meta"><b>${esc(p.title)}</b><small>${esc([p.cat, p.type, p.status, p.location].filter(Boolean).join(' · '))} · ${(p.photos || []).length} photo(s)${p.video ? ' · video' : ''}</small></div>
+        <button class="btn" type="button" data-pview="${esc(p.id)}">View</button>
+        <button class="btn ghost" type="button" data-pdel="${esc(p.id)}" style="${st.confirmDel === p.id ? 'border-color:var(--err);color:var(--err)' : ''}">${st.confirmDel === p.id ? 'Tap again to delete' : 'Delete'}</button></div>`;
+    }).join('') : '<div class="empty"><h2>No projects yet.</h2><p>Add your first real project above — it appears on the Our Work page straight away.</p></div>');
+  }
+  async function addPhotos(list) {
+    const msg = $('#pMsg');
+    for (const f of list) {
+      if (st.pphotos.length >= 8) { msg.textContent = 'Maximum 8 photos per project.'; break; }
+      if (!f.type.startsWith('image/')) { msg.textContent = 'Only photos can be uploaded here.'; continue; }
+      try { st.pphotos.push(await shrinkImage(f, st.local ? 900 : 1600, st.local ? .7 : .82)); } catch (_) { msg.textContent = 'Could not read ' + f.name + '.'; }
+    }
+    renderPreview();
+  }
+  async function addProject() {
+    const msg = $('#pMsg'), btn = $('#pAdd');
+    const title = $('#pTitle').value.trim(), video = $('#pVideo').value.trim();
+    if (!title) { msg.textContent = 'Please enter a project title.'; return; }
+    if (!st.pphotos.length && !video) { msg.textContent = 'Add at least one photo or a video link.'; return; }
+    if (video && !/^https:\/\//i.test(video)) { msg.textContent = 'The video link must start with https://'; return; }
+    const rec = { title, cat: $('#pCat').value, type: $('#pType').value, status: $('#pStatus').value, location: $('#pLoc').value.trim(), video };
+    btn.disabled = true; msg.textContent = 'Publishing… please wait.';
+    try {
+      if (st.local) {
+        const list = lsGet('amrkals_projects_local', []);
+        list.unshift({ id: 'L-' + Date.now().toString(36), ...rec, photos: st.pphotos.map(x => 'data:image/jpeg;base64,' + x.data) });
+        if (!lsSet('amrkals_projects_local', list)) throw new Error('Preview storage on this device is full. Connect the backend to store unlimited photos.');
+      } else {
+        const j = await api({ action: 'addProject', pin: st.pin, ...rec, photos: st.pphotos.map(({ name, type, data }) => ({ name, type, data })) }, 120000);
+        if (!(j && j.ok)) throw new Error((j && j.error === 'unauthorized') ? 'Wrong PIN — log out and sign in again.' : (j && j.message) || 'The server could not save this project. Check the backend is updated (setup guide below).');
+        await loadProjects();
+      }
+      st.pphotos = [];
+      ['pTitle', 'pLoc', 'pVideo'].forEach(id => { const i = $('#' + id); if (i) i.value = ''; });
+      renderPreview(); renderPList();
+      msg.textContent = 'Published ✓ It is now on your Our Work page.';
+    } catch (e) { msg.textContent = (e && e.message) || 'Could not publish. Check your internet and try again.'; }
+    btn.disabled = false;
+  }
+  async function delProject(id) {
+    if (st.confirmDel !== id) { st.confirmDel = id; renderPList(); return; }
+    st.confirmDel = '';
+    if (st.local) { lsSet('amrkals_projects_local', lsGet('amrkals_projects_local', []).filter(p => p.id !== id)); renderPList(); return; }
+    try { const j = await api({ action: 'deleteProject', pin: st.pin, id }); if (!(j && j.ok)) throw 0; await loadProjects(); }
+    catch (_) { st.err = 'Could not delete the project. Try again.'; draw(); return; }
+    renderPList();
+  }
 
   function drawList() {
     const cnt = (s) => st.rows.filter(r => (r.status || 'New') === s).length;
@@ -993,7 +1370,7 @@ function initAdmin() {
     return `<article class="lead ${status === 'New' ? 'new' : ''}"><div class="lead-top"><div><b>${esc(r.name)}</b><small>${esc(r.ref)} · ${esc(fmtDate(r.received || r.submittedAt))}</small></div>
       <select data-st="${esc(r.ref)}">${STATUSES.map(s => `<option ${s === status ? 'selected' : ''}>${s}</option>`).join('')}</select></div>
       <dl>${row('Mobile', r.mobile)}${row('Requirement', r.requirement)}${row('Material / service', r.material)}${row('Address', r.address)}${row('Project', [r.projectType, r.area && r.area + ' sq ft', r.timeline].filter(Boolean).join(' · '))}
-      ${row('Company', r.company)}${row('Email', r.email)}${row('Notes', r.notes)}${row('Landmark', r.landmark)}${row('GPS', r.coords)}
+      ${row('Company', r.company)}${row('Email', r.email)}${row('Notes', r.notes)}${row('Landmark', r.landmark)}${/^-?\d+\.\d+, ?-?\d+\.\d+$/.test(String(r.coords || '')) ? `<dt>GPS</dt><dd><a class="link" target="_blank" rel="noopener" href="https://www.google.com/maps?q=${encodeURIComponent(String(r.coords).replace(/\s/g, ''))}">${esc(r.coords)} — open in Maps</a></dd>` : ''}
       ${map ? `<dt>Map</dt><dd><a class="link" target="_blank" rel="noopener" href="${esc(map)}">Open map link</a></dd>` : ''}${files ? `<dt>Files</dt><dd>${files}</dd>` : ''}</dl>
       <div class="acts"><a class="btn solid" target="_blank" rel="noopener" href="https://wa.me/${esc(toWaNum(r.mobile))}?text=${encodeURIComponent(msg)}">WhatsApp customer</a><a class="btn" href="tel:${esc(String(r.mobile || '').replace(/[^\d+]/g, ''))}">Call</a></div></article>`;
   }
@@ -1008,6 +1385,7 @@ function initAdmin() {
   });
   root.addEventListener('input', (e) => { if (e.target.id === 'q') { st.q = e.target.value; drawList(); } });
   root.addEventListener('change', async (e) => {
+    if (e.target.classList && e.target.classList.contains('pfin')) { const list = [...e.target.files]; e.target.value = ''; addPhotos(list); return; }
     if (e.target.id === 'flt') { st.filter = e.target.value; drawList(); return; }
     const ref = e.target.dataset && e.target.dataset.st; if (!ref) return;
     const status = e.target.value; const row = st.rows.find(r => r.ref === ref); if (!row) return;
@@ -1018,6 +1396,12 @@ function initAdmin() {
     draw();
   });
   root.addEventListener('click', (e) => {
+    const tab = e.target.closest('[data-tab]');
+    if (tab) { st.tab = tab.dataset.tab; $('#tabLeads').hidden = st.tab !== 'leads'; $('#tabProj').hidden = st.tab !== 'projects'; $$('[data-tab]', root).forEach(b => b.classList.toggle('on', b.dataset.tab === st.tab)); if (st.tab === 'projects' && !st.local) loadProjects().then(() => renderPList()); return; }
+    if (e.target.id === 'pAdd') { addProject(); return; }
+    const rm = e.target.closest('[data-prm]'); if (rm) { st.pphotos.splice(+rm.dataset.prm, 1); renderPreview(); return; }
+    const pd = e.target.closest('[data-pdel]'); if (pd) { delProject(pd.dataset.pdel); return; }
+    if (e.target.closest('[data-pview]')) return; // opened by the site-wide gallery handler below
     if (e.target.id === 'copyCode') {
       const box = $('#codeBox'), msg = $('#copyMsg'); let done = false;
       try { box.focus(); box.select(); done = document.execCommand('copy'); } catch (_) {}
@@ -1036,7 +1420,7 @@ document.addEventListener('input', e => {
   if (k && data && e.target.closest('#form')) data[k] = e.target.value;
 });
 document.addEventListener('change', e => {
-  if (e.target.id === 'fileIn') addFiles([...e.target.files]);
+  if (e.target.classList && e.target.classList.contains('fin')) { const list = [...e.target.files]; e.target.value = ''; addFiles(list); }
 });
 document.addEventListener('click', e => {
   const t = e.target;
@@ -1050,12 +1434,31 @@ document.addEventListener('click', e => {
     if (step === 5) { submitInquiry(); return; }
     step++; renderStep(); window.scrollTo({ top: 120, behavior: 'smooth' });
   }
+  if (t.id === 'paste') {
+    const m = $('#geomsg');
+    if (!(navigator.clipboard && navigator.clipboard.readText)) { m.textContent = 'Paste is blocked here — long-press the Google Maps link box and choose Paste.'; return; }
+    navigator.clipboard.readText().then(v => { v = String(v || '').trim(); if (/^https?:\/\//i.test(v)) { data.mapLink = v; const i = $('input[data-k=mapLink]'); if (i) i.value = v; m.textContent = 'Map link added.'; } else m.textContent = 'The copied text is not a link. Copy the Google Maps share link first.'; },
+      () => { m.textContent = 'Paste is blocked here — long-press the Google Maps link box and choose Paste.'; });
+  }
   if (t.id === 'geo') {
     const m = $('#geomsg');
-    if (!navigator.geolocation) { m.textContent = 'Location is not available on this device.'; return; }
-    m.textContent = 'Requesting location…';
-    navigator.geolocation.getCurrentPosition(p => { data.coords = p.coords.latitude.toFixed(5) + ', ' + p.coords.longitude.toFixed(5); m.textContent = 'Location captured: ' + data.coords; },
-      () => { m.textContent = 'Could not get your location — paste a Google Maps link instead.'; });
+    const fail = (why) => {
+      const opened = tryOpen(MAPS_URL);
+      m.innerHTML = esc(why) + (opened ? ' <b>Google Maps has opened</b> — tap the blue dot → Share → Copy link, come back and tap “Paste copied link”.' : ' Use <b>Share live location on WhatsApp</b> or <b>Open Google Maps</b> below.');
+    };
+    if (!navigator.geolocation) { fail('This view cannot read your location.'); return; }
+    m.textContent = 'Requesting location… please tap Allow.';
+    try {
+      navigator.geolocation.getCurrentPosition(p => {
+        const lat = p.coords.latitude.toFixed(5), lng = p.coords.longitude.toFixed(5);
+        data.coords = lat + ', ' + lng;
+        const url = 'https://www.google.com/maps?q=' + lat + ',' + lng;
+        if (!data.mapLink) { data.mapLink = url; const i = $('input[data-k=mapLink]'); if (i) i.value = url; }
+        m.innerHTML = 'Location captured ✓ ' + esc(data.coords) + ' — <a class="link" target="_blank" rel="noopener" href="' + url + '">view on map</a>';
+      }, (err) => {
+        fail(err && err.code === 1 ? 'Location is blocked for this page.' : err && err.code === 3 ? 'No GPS fix yet — switch on GPS and try again.' : 'Could not detect your position.');
+      }, { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 });
+    } catch (_) { fail('Location is blocked in this view.'); }
   }
 });
 
@@ -1081,8 +1484,51 @@ document.addEventListener('click', (e) => {
   if (!a || e.defaultPrevented || e.button || e.metaKey || e.ctrlKey || e.shiftKey) return;
   e.preventDefault(); go(a.getAttribute('href'));
 });
+/* Safety net: some in-app previews silently block phone and WhatsApp links. If the page is still in front
+   after tapping one, show a sheet with the number, a copy button and a working direct link. */
+let leftPage = false, sheetTimer = null;
+['pagehide', 'blur'].forEach(ev => window.addEventListener(ev, () => { leftPage = true; }));
+document.addEventListener('visibilitychange', () => { if (document.hidden) leftPage = true; });
+function copyText(text) {
+  return new Promise((resolve) => {
+    let ok = false;
+    try { const t = document.createElement('textarea'); t.value = text; t.style.cssText = 'position:fixed;opacity:0'; document.body.appendChild(t); t.select(); ok = document.execCommand('copy'); t.remove(); } catch (_) {}
+    if (ok) return resolve(true);
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(() => resolve(true), () => resolve(false)); else resolve(false);
+  });
+}
+function closeSheet() { const s = $('#sheet'); if (s) s.remove(); }
+function showSheet(href) {
+  closeSheet();
+  const isTel = /^tel:/i.test(href);
+  const num = isTel ? decodeURIComponent(href.slice(4)) : '';
+  const shown = num.replace(/^\+91/, '');
+  const el = document.createElement('div'); el.id = 'sheet'; el.className = 'sheet-bg';
+  el.innerHTML = `<div class="sheet" role="dialog" aria-modal="true"><h3>${isTel ? 'Call The Amrkals Group' : 'Open this link'}</h3>
+    ${isTel ? `<div class="big">${esc(shown)}</div><p>If your phone did not open the dialer, tap <b>Call now</b>, or copy the number and dial it.</p>` : `<p style="word-break:break-all;margin-top:10px">${esc(href)}</p>`}
+    <div class="row"><a class="btn solid" data-native href="${esc(href)}" ${isTel ? '' : 'target="_blank" rel="noopener"'}>${isTel ? 'Call now' : 'Open'}</a>
+    <button class="btn" type="button" id="sheetCopy">${isTel ? 'Copy number' : 'Copy link'}</button>
+    ${isTel ? `<a class="btn" data-native target="_blank" rel="noopener" href="${esc(waLink())}">WhatsApp</a>` : ''}
+    <button class="btn ghost" type="button" id="sheetClose">Close</button></div><p id="sheetMsg" style="margin-top:12px"></p></div>`;
+  document.body.appendChild(el);
+  el.addEventListener('click', async (e) => {
+    if (e.target === el || e.target.id === 'sheetClose') closeSheet();
+    if (e.target.id === 'sheetCopy') { const ok = await copyText(isTel ? shown : href); $('#sheetMsg').textContent = ok ? 'Copied.' : 'Could not copy — select and copy it manually.'; }
+  });
+}
+document.addEventListener('click', (e) => {
+  const a = e.target.closest && e.target.closest('a[href^="tel:"], a[target="_blank"]');
+  if (!a || a.hasAttribute('data-native')) return;
+  const href = a.getAttribute('href') || '';
+  if (!/^(tel:|https?:)/i.test(href)) return;
+  leftPage = false; clearTimeout(sheetTimer);
+  sheetTimer = setTimeout(() => { if (!leftPage && !document.hidden) showSheet(href); }, 1100);
+});
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeSheet(); });
+
 let lastKey = '';
 function route() {
+  closeSheet(); closeLb();
   if (adminTimer) { clearInterval(adminTimer); adminTimer = null; }
   const raw = CURRENT.replace(/^#\/?/, '');
   const [pathRaw, qs = ''] = raw.split('?');
@@ -1113,6 +1559,7 @@ $('#burger').addEventListener('click', () => { const o = $('#nav').classList.tog
 $('#yr').textContent = new Date().getFullYear();
 route();
 flushOutbox();
+loadProjects();
 </script>
 </body>
 </html>
